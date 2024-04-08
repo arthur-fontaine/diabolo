@@ -2,14 +2,11 @@ export interface Service<
   ServiceName extends string,
   ServiceType extends Record<string, unknown>,
 > {
-  _internalDoNotAssignItIsUsedForTypeInference: ServiceType
-  _serviceType: ServiceType
+  _internalDoNotAssignItIsUsedForTypeInferenceServiceType: ServiceType
   _tag: ServiceName
+  _type: 'service'
 }
 
 export type ServiceImpl<
   ServiceToInfer extends Service<string, Record<string, unknown>>,
-> =
-  ServiceToInfer extends Service<string, infer ServiceType>
-    ? ServiceType
-    : never
+> = ServiceToInfer['_internalDoNotAssignItIsUsedForTypeInferenceServiceType']
