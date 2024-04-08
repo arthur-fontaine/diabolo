@@ -1,4 +1,4 @@
-import type { Function as DistopiaFunction, FunctionDependencies, FunctionReturnValue } from './types/function'
+import type { Function as DistopiaFunction, FunctionArguments, FunctionDependencies, FunctionReturnValue } from './types/function'
 import type { Service as DistopiaService } from './types/service'
 
 /**
@@ -7,10 +7,14 @@ import type { Service as DistopiaService } from './types/service'
 export function runFunction<
   Function extends DistopiaFunction<
     ReturnValue,
+    Arguments,
     DistopiaService<string, Record<string, unknown>>
   >,
   ReturnValue = FunctionReturnValue<Function>,
->(function_: Function): () => Generator<
+  Arguments extends unknown[] = FunctionArguments<Function>,
+>(function_: Function): (
+  ...args: Arguments
+) => Generator<
   FunctionDependencies<Function>,
   ReturnValue,
   unknown
