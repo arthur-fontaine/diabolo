@@ -3,6 +3,9 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },

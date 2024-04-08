@@ -5,25 +5,26 @@
 ```ts
 import * as DI from 'distopia'
 
-interface LoggerService extends DI.Service<'Logger', {
-  log: (message: string) => void
-}> {}
+interface AdderService extends DI.Service<'Adder', {
+  add: (a: number, b: number) => number
+}> { }
 
-const loggerService = DI.createService<LoggerService>('Logger')
+const adderService = DI.createService<AdderService>('Adder')
 
-const loggerServiceImpl = DI.lazyCreateServiceImpl(
-  loggerService,
+const adderServiceImpl = DI.lazyCreateServiceImpl<AdderService>(
   () => ({
-    log: (message: string) => console.log(message)
-  })
+    add: (a: number, b: number) => a + b,
+  }),
 )
 
-const mainFunction = DI.createFunction(({ require }) => {
-  const logger = require(loggerService)
-  logger.log('Hello, world!')
+const mainFunction = DI.createFunction(function* () {
+  const adder = yield * DI.requireService(adderService)
+  return adder.add(1, 2)
 })
 
-DI.runFunction(mainFunction, {
-  loggerService: loggerServiceImpl
+const result = DI.run(mainFunction(), {
+  Adder: adderServiceImpl,
 })
+
+// result === 3
 ```
