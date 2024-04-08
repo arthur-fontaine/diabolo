@@ -6,7 +6,6 @@ import type { Service as DistopiaService, ServiceImpl } from './types/service'
 export function lazyCreateServiceImpl<
   Service extends DistopiaService<string, Record<string, unknown>>,
 >(
-  service: Service,
   impl: () => ServiceImpl<Service>,
 ): () => ServiceImpl<Service> {
   return impl

@@ -1,43 +1,46 @@
-import type { RunFunctionReturn } from './run-function'
-import type { Function as DistopiaFunction, FunctionArguments, FunctionDependencies, FunctionReturnValue } from './types/function'
 import type { Service as DistopiaService, ServiceImpl } from './types/service'
-
-type FunctionDependenciesAsObject<
-  FunctionToInfer extends DistopiaFunction<
-    unknown,
-    unknown[],
-    DistopiaService<string, Record<string, unknown>>
-  >,
-> = {
-  [K in FunctionDependencies<FunctionToInfer>['name']]: () => Extract<
-    FunctionDependencies<FunctionToInfer>,
-    { serviceName: K }
-  >
-}
 
 /**
  * Run a function.
  */
-export async function run<
-  Generator extends RunFunctionReturn<Function, ReturnValue, Arguments>,
-  Function extends DistopiaFunction<
-    ReturnValue,
-    Arguments,
-    DistopiaService<string, Record<string, unknown>>
+export function run<
+  G extends Generator<
+    Dependencies,
+    ReturnValue
   >,
-  ReturnValue = FunctionReturnValue<Function>,
-  Arguments extends unknown[] = FunctionArguments<Function>,
+  ReturnValue = G extends Generator<unknown, infer ReturnValue>
+    ? ReturnValue
+    : never,
+  Dependencies extends DistopiaService<
+    string,
+    Record<string, unknown>
+  > = G extends Generator<infer Dependencies, unknown>
+    ? Dependencies
+    : never,
 >(
-  generator: Generator,
-  dependencies: FunctionDependenciesAsObject<Function>,
-) {
-  for await (const dependencyRequested of generator) {
-    const serviceName: keyof FunctionDependenciesAsObject<Function>
+  generator: G,
+  dependencies: {
+    [ServiceName in Dependencies['name']]: () => ServiceImpl<Extract<
+      Dependencies,
+      { name: ServiceName }
+    >>
+  },
+): ReturnValue {
+  let result
+  while (true) {
+    const { done, value } = generator.next()
+    if (done) {
+      result = value as ReturnValue
+      break
+    }
+
+    const dependencyRequested = value
+    const serviceName: keyof typeof dependencies
       = dependencyRequested.name
     const dependency = dependencies[serviceName]()
 
-    dependencyRequested.value = dependency.value!
+    value.value = dependency
   }
 
-  return generator.return()
+  return result
 }

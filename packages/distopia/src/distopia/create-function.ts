@@ -17,8 +17,12 @@ export function createFunction<
   Arguments extends unknown[],
   Dependencies extends DistopiaService<string, Record<string, unknown>>,
 >(
-  // eslint-disable-next-line unused-imports/no-unused-vars -- It will be used later.
-  callback: CreateFunctionCallback<ReturnValue, Arguments, Dependencies>,
+  function_: CreateFunctionCallback<ReturnValue, Arguments, Dependencies>,
 ): DistopiaFunction<ReturnValue, Arguments, Dependencies> {
-  return {} as unknown as DistopiaFunction<ReturnValue, Arguments, Dependencies>
+  return Object.assign(function_, {
+    _internalDoNotAssignItIsUsedForTypeInferenceArguments: undefined as never,
+    _internalDoNotAssignItIsUsedForTypeInferenceDependencies:
+      undefined as never,
+    _internalDoNotAssignItIsUsedForTypeInferenceReturnValue: undefined as never,
+  })
 }
