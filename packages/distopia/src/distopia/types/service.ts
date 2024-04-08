@@ -1,12 +1,11 @@
+import type { Ref } from './ref'
+
 export interface Service<
   ServiceName extends string,
   ServiceType extends Record<string, unknown>,
-> {
-  _internalDoNotAssignItIsUsedForTypeInferenceServiceType: ServiceType
-  _tag: ServiceName
-  _type: 'service'
+> extends Ref<ServiceType, ServiceName, 'service'> {
 }
 
 export type ServiceImpl<
   ServiceToInfer extends Service<string, Record<string, unknown>>,
-> = ServiceToInfer['_internalDoNotAssignItIsUsedForTypeInferenceServiceType']
+> = ServiceToInfer['value']
