@@ -2,13 +2,18 @@
   "name": "distopia",
   "version": "1.0.0",
   "packageManager": "pnpm@8.15.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthur-fontaine.ts"
+  },
   "description": "",
   "author": "",
   "license": "ISC",
   "keywords": [],
   "main": "index.js",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "www"
   ],
   "engines": {
     "node": ">=20.0.0"
