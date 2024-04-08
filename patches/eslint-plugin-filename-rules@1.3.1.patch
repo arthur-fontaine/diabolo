@@ -1,0 +1,24 @@
+diff --git a/lib/match.js b/lib/match.js
+index f1b4e3bfb848639110fbe352b994cba3e660a5f0..a4355f3ae6dc9c782673c9cd822a0f75ae9a5a13 100644
+--- a/lib/match.js
++++ b/lib/match.js
+@@ -10,6 +10,7 @@ const meta = {
+   messages: {
+     noMatch: "Filename '{{name}}' does not match {{value}}.",
+   },
++  schema: false,
+ };
+ 
+ module.exports = {
+diff --git a/lib/notMatch.js b/lib/notMatch.js
+index cf64e5d2a271976e49358c79d12ce9ab491e3b92..737cb51fc65bb1960329a5927660bc5cc0501e76 100644
+--- a/lib/notMatch.js
++++ b/lib/notMatch.js
+@@ -10,6 +10,7 @@ const meta = {
+   messages: {
+     match: "Filename '{{name}}' must not match {{value}}.",
+   },
++  schema: false,
+ };
+ 
+ module.exports = {

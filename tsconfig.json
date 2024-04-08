@@ -1,0 +1,10 @@
+{
+  "extends": "@tsconfig/strictest/tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["ESNext"],
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "exclude": ["*.config.*"]
+}

@@ -1,0 +1,12 @@
+diff --git a/rules/prefer-custom-hooks.js b/rules/prefer-custom-hooks.js
+index 379b20b8f055ffa8544f87e548d1e4f1d92363e0..2563ddca51bd182832dc3b16fe5bf4f9f846074b 100644
+--- a/rules/prefer-custom-hooks.js
++++ b/rules/prefer-custom-hooks.js
+@@ -26,6 +26,7 @@ const DEFAULT_OPTIONS = {
+ module.exports = {
+   meta: {
+     type: 'suggestion',
++    schema: false,
+   },
+   create(context) {
+     const userOptions = context.options[0] || {}
