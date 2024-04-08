@@ -1,16 +1,10 @@
 import type { Function as DistopiaFunction } from '../distopia/types/function'
 import type { Service as DistopiaService, ServiceImpl } from '../distopia/types/service'
 
-type RequireServiceFunction = <
-  Service extends DistopiaService<string, Record<string, unknown>>,
->(service: Service) => Generator<Service, ServiceImpl<Service>, unknown>
-
 type CreateFunctionCallback<
   ReturnValue,
   RequiredServices extends DistopiaService<string, Record<string, unknown>>,
-> = (
-  { require }: { require: RequireServiceFunction }
-) => Generator<RequiredServices, ReturnValue, unknown>
+> = () => Generator<RequiredServices, ReturnValue, unknown>
 
 /**
  * Create a function that requires and uses services.
