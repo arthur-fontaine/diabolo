@@ -3,18 +3,18 @@ import type { Service as DistopiaService, ServiceImpl } from '../distopia/types/
 
 type CreateFunctionCallback<
   ReturnValue,
-  RequiredServices extends DistopiaService<string, Record<string, unknown>>,
-> = () => Generator<RequiredServices, ReturnValue, unknown>
+  Dependencies extends DistopiaService<string, Record<string, unknown>>,
+> = () => Generator<Dependencies, ReturnValue, unknown>
 
 /**
  * Create a function that requires and uses services.
  */
 export function createFunction<
   ReturnValue,
-  RequiredServices extends DistopiaService<string, Record<string, unknown>>,
+  Dependencies extends DistopiaService<string, Record<string, unknown>>,
 >(
   // eslint-disable-next-line unused-imports/no-unused-vars -- It will be used later.
-  callback: CreateFunctionCallback<ReturnValue, RequiredServices>,
-): DistopiaFunction<ReturnValue, RequiredServices> {
-  return {} as unknown as DistopiaFunction<ReturnValue, RequiredServices>
+  callback: CreateFunctionCallback<ReturnValue, Dependencies>,
+): DistopiaFunction<ReturnValue, Dependencies> {
+  return {} as unknown as DistopiaFunction<ReturnValue, Dependencies>
 }
