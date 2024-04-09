@@ -2,10 +2,17 @@ import { defineConfig } from 'astro/config';
 import orama from '@orama/plugin-astro';
 import remarkGithubBetaBlockquoteAdmonitions from 'remark-github-beta-blockquote-admonitions';
 import react from '@astrojs/react';
+import vercel from '@astrojs/vercel/static';
 import Icons from 'unplugin-icons/vite';
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'static',
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
   vite: {
     plugins: [
       Icons({
