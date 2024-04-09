@@ -1,6 +1,0 @@
-export { createFunction as fn } from './distopia/create-function'
-export { createService as srv } from './distopia/create-service'
-export { lazyCreateServiceImpl as impl } from './distopia/lazy-create-service-impl'
-export { requireService as req } from './distopia/require-service'
-export { run } from './distopia/run'
-export type { Service as Srv } from './distopia/types/service'

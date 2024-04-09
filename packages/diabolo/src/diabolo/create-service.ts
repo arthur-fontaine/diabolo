@@ -1,10 +1,10 @@
-import type { Service as DistopiaService } from '../distopia'
+import type { Service as DiaboloService } from '../diabolo'
 
 /**
  * Create a service.
  */
 export function createService<
-  Service extends DistopiaService<string, Record<string, unknown>>,
+  Service extends DiaboloService<string, Record<string, unknown>>,
 >(name: Service['name']): Service {
   const _createService = () => {
     return {

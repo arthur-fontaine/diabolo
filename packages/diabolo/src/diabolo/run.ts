@@ -1,4 +1,4 @@
-import type { Service as DistopiaService, ServiceImpl } from './types/service'
+import type { Service as DiaboloService, ServiceImpl } from './types/service'
 
 /**
  * Run a function.
@@ -11,7 +11,7 @@ export function run<
   ReturnValue = G extends Generator<unknown, infer ReturnValue>
     ? ReturnValue
     : never,
-  Dependencies extends DistopiaService<
+  Dependencies extends DiaboloService<
     string,
     Record<string, unknown>
   > = G extends Generator<infer Dependencies, unknown>

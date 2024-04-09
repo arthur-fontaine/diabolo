@@ -1,1 +1,1 @@
-./packages/distopia/README.md
+./packages/diabolo/README.md

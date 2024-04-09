@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import * as DI from '../src/distopia'
+import * as DI from '../src/diabolo'
 
 describe('service injection', () => {
   it('should work', () => {

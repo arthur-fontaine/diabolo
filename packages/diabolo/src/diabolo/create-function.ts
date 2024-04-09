@@ -1,10 +1,10 @@
-import type { Function as DistopiaFunction } from '../distopia/types/function'
-import type { Service as DistopiaService, ServiceImpl } from '../distopia/types/service'
+import type { Function as DiaboloFunction } from './types/function'
+import type { Service as DiaboloService } from './types/service'
 
 type CreateFunctionCallback<
   ReturnValue,
   Arguments extends unknown[],
-  Dependencies extends DistopiaService<string, Record<string, unknown>>,
+  Dependencies extends DiaboloService<string, Record<string, unknown>>,
 > = (
   ...args: Arguments
 ) => Generator<Dependencies, ReturnValue, unknown>
@@ -15,10 +15,10 @@ type CreateFunctionCallback<
 export function createFunction<
   ReturnValue,
   Arguments extends unknown[],
-  Dependencies extends DistopiaService<string, Record<string, unknown>>,
+  Dependencies extends DiaboloService<string, Record<string, unknown>>,
 >(
   function_: CreateFunctionCallback<ReturnValue, Arguments, Dependencies>,
-): DistopiaFunction<ReturnValue, Arguments, Dependencies> {
+): DiaboloFunction<ReturnValue, Arguments, Dependencies> {
   return Object.assign(function_, {
     _internalDoNotAssignItIsUsedForTypeInferenceArguments: undefined as never,
     _internalDoNotAssignItIsUsedForTypeInferenceDependencies:

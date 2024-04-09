@@ -3,10 +3,10 @@
     src="./.github/assets/logo.png"
     width="200px"
     align="center"
-    alt="Distopia logo" />
-  <h1 align="center">Distopia</h1>
+    alt="Diabolo logo" />
+  <h1 align="center">Diabolo</h1>
   <p align="center">
-    <a href="https://distopia.js.org">https://distopia.js.org</a>
+    <a href="https://diabolo.js.org">https://diabolo.js.org</a>
     <br/>
     Dependency injection for JavaScript.
     <br/>
@@ -18,10 +18,32 @@
 
 ### Installation
 
+#### Deno
+
+```bash
+deno add @arthur-fontaine/diabolo
+```
+
+You can change your import map (in `deno.json`) to allow for imports like
+`import * as DI from 'diabolo'`.
+
+```diff
+{
+  "imports": {
+-    "@arthur-fontaine/diabolo": "jsr:@arthur-fontaine/diabolo"
++    "diabolo": "jsr:@arthur-fontaine/diabolo"
+  }
+}
+```
+
+#### Other environments
+
 ```bash
 echo "@jsr:registry=https://npm.jsr.io" >> .npmrc
-npm i distopia@npm:@jsr/arthur-fontaine__distopia
+pnpm i diabolo@npm:@jsr/arthur-fontaine__diabolo
 ```
+
+*See why we use JSR instead of NPM here: [https://jsr.io/docs/why](https://jsr.io/docs/why)*.
 
 ### What is dependency injection?
 
@@ -38,16 +60,16 @@ That's where dependency injection comes in. However, using dependency
 injection in the JavaScript ecosystem is not a common practice, despite
 its benefits.
 
-### What is Distopia?
+### What is Diabolo?
 
-Distopia is a library that provides a simple and type-safe way to
+Diabolo is a library that provides a simple and type-safe way to
 implement dependency injection in JavaScript. It is inspired by the
 [Effect](https://effect.website/) library.
 
-Let's see an example:
+### Example
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 interface AdderService extends DI.Service<'Adder', {
   add: (a: number, b: number) => number
@@ -71,6 +93,53 @@ const result = DI.run(mainFunction(), {
 // result === 3
 ```
 
+### Comparison with other libraries
+
+#### Effect
+
+Effect is a library with a large (too large?) scope. At the time I
+am writing this, the “Unpacked size” of Effect on NPM is 16.3 MB.
+In comparison, the “Unpacked size” of Diabolo is only a few dozen KB.
+
+Among other things, Effect provides a way to manage dependency injection.
+To achieve dependency injection in Effect, you need to use at least 3 modules:
+`Effect`, `Context`, and `Layer`. `Effect` has 305 exported members, `Context`
+has 14 exported members, and `Layer` has 79 exported members. That can make
+it difficult to understand how to use the library.
+
+Also, as mentioned above, the purpose of dependency injection is decoupling.
+However, Effect describes itself as “the missing standard library for
+TypeScript”. Depending on how you use Effect, it may be contrary to the
+principle of decoupling.
+
+Diabolo, on its side, is a library with a very small scope. It only provides
+a way to manage dependency injection. Its exported members can be counted
+on the fingers of one hand. It is very easy to understand how to use the
+library.
+
+#### InversifyJS and TSyringe
+
+InversifyJS and TSyringe are two popular dependency injection libraries
+for TypeScript.
+
+As just mentioned, they are dependency injection libraries **for TypeScript**,
+and only for TypeScript. They cannot be used with vanilla JavaScript.
+
+They also rely on TypeScript **`experimentalDecorators`**, which are not
+compatible with the [TC39 decorators proposal](https://github.com/tc39/proposal-decorators), as
+TypeScript decorators are based on an old version of the proposal.
+
+Moreover, you will likely need to install `reflect-metadata` to use
+decorators.
+
+If you use Babel in your project, you will also need to install
+`babel-plugin-transform-typescript-metadata`.
+
+On the other hand, Diabolo is very simple to use. It does not require
+any other dependencies. It is cross-platform because it relies on
+generators, which are available in all JavaScript environments since
+2016.
+
 ### Motivation
 
 I am a big fan of the Effect library. However, it is very complex. Even
@@ -79,17 +148,20 @@ whole library. The concept I found most interesting in Effect is the
 dependency injection part. So I decided to create a simpler library
 (strongly inspired by Effect) that only focuses on dependency injection.
 
+This way, my friends can use (and learn) dependency injection in our
+school projects.
+
 ## Creating services
 
 A service is a type that represents a *something* that can be injected.
 That *something* can be a function, a class, an object… anything you
 want.
 
-To create a service in Distopia, you need to use the `Service` type and
+To create a service in Diabolo, you need to use the `Service` type and
 the `createService` function.
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 interface MyService extends DI.Service<
   'MyService', // The name of the service
@@ -105,11 +177,11 @@ const myService = DI.createService<MyService>('MyService')
 
 Implementing a service is creating a function that returns the service.
 
-To implement a service in Distopia, you need to use the `lazyCreateServiceImpl`
+To implement a service in Diabolo, you need to use the `lazyCreateServiceImpl`
 function.
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 const myServiceImpl = DI.lazyCreateServiceImpl<MyService>(() => ({
   myFunction: () => {
@@ -120,10 +192,10 @@ const myServiceImpl = DI.lazyCreateServiceImpl<MyService>(() => ({
 
 ## Using services
 
-To use a service in Distopia, you need to use the `createFunction` function.
+To use a service in Diabolo, you need to use the `createFunction` function.
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 const mainFunction = DI.createFunction(function* () {
   // ...
@@ -139,7 +211,7 @@ Now, you can use the `yield * DI.requireService` function to get the
 service you want.
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 const mainFunction = DI.createFunction(function* () {
   const myService = yield * DI.requireService(myService)
@@ -152,7 +224,7 @@ const mainFunction = DI.createFunction(function* () {
 To run your program, you need to use the `run` function.
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 DI.run(mainFunction(), {
   MyService: myServiceImpl
@@ -164,12 +236,12 @@ will get a TypeScript error.
 
 ## Alias
 
-Instead of importing from `'distopia'`, you can import from
-`'distopia/aliased'`. This version exports all the functions
-and types from `'distopia'` with shorter names.
+Instead of importing from `'diabolo'`, you can import from
+`'diabolo/aliased'`. This version exports all the functions
+and types from `'diabolo'` with shorter names.
 
 ```ts
-import * as DI from 'distopia/aliased'
+import * as DI from 'diabolo/aliased'
 ```
 
 Here is the table of the aliases:
@@ -188,7 +260,7 @@ Here is the table of the aliases:
 ### API service
 
 ```ts
-import * as DI from 'distopia'
+import * as DI from 'diabolo'
 
 interface ApiService extends DI.Service<'ApiService', {
   getDog: () => Promise<string>

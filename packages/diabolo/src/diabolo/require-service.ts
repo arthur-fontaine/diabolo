@@ -1,10 +1,10 @@
-import type { Service as DistopiaService, ServiceImpl } from './types/service'
+import type { Service as DiaboloService, ServiceImpl } from './types/service'
 
 /**
  * Require a service.
  */
 export function* requireService<
-  Service extends DistopiaService<string, Record<string, unknown>>,
+  Service extends DiaboloService<string, Record<string, unknown>>,
 >(service: Service): Generator<Service, ServiceImpl<Service>, unknown> {
   const serviceRef = service.clone()
   yield serviceRef as Service

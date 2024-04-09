@@ -1,9 +1,9 @@
-import type { Service as DistopiaService } from './service'
+import type { Service as DiaboloService } from './service'
 
 export interface Function<
   ReturnValue,
   Arguments extends unknown[],
-  Dependencies extends DistopiaService<string, Record<string, unknown>>,
+  Dependencies extends DiaboloService<string, Record<string, unknown>>,
 > {
   (...args: Arguments): Generator<Dependencies, ReturnValue>
   _internalDoNotAssignItIsUsedForTypeInferenceArguments: Arguments
@@ -19,7 +19,7 @@ export type FunctionDependencies<
   >,
   ReturnValue = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceReturnValue'],
   Arguments extends unknown[] = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceArguments'],
-  Dependencies extends DistopiaService<string, Record<string, unknown>> = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies'],
+  Dependencies extends DiaboloService<string, Record<string, unknown>> = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies'],
 > = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies']
 
 export type FunctionReturnValue<
@@ -30,7 +30,7 @@ export type FunctionReturnValue<
   >,
   ReturnValue = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceReturnValue'],
   Arguments extends unknown[] = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceArguments'],
-  Dependencies extends DistopiaService<string, Record<string, unknown>> = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies'],
+  Dependencies extends DiaboloService<string, Record<string, unknown>> = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies'],
 > = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceReturnValue']
 
 export type FunctionArguments<
@@ -41,5 +41,5 @@ export type FunctionArguments<
   >,
   ReturnValue = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceReturnValue'],
   Arguments extends unknown[] = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceArguments'],
-  Dependencies extends DistopiaService<string, Record<string, unknown>> = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies'],
+  Dependencies extends DiaboloService<string, Record<string, unknown>> = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceDependencies'],
 > = FunctionToInfer['_internalDoNotAssignItIsUsedForTypeInferenceArguments']
