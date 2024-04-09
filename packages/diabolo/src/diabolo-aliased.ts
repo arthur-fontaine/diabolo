@@ -1,6 +1,6 @@
 export { createFunction as fn } from './diabolo/create-function'
 export { createService as srv } from './diabolo/create-service'
 export { lazyCreateServiceImpl as impl } from './diabolo/lazy-create-service-impl'
+export { provide as prov } from './diabolo/provide'
 export { requireService as req } from './diabolo/require-service'
-export { run } from './diabolo/run'
 export type { Service as Srv } from './diabolo/types/service'

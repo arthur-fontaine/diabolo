@@ -23,10 +23,10 @@ describe('service injection', () => {
     })
 
     // Act
-    const result = DI.run(mainFunction(), {
+    const result = DI.provide(mainFunction, {
       // eslint-disable-next-line ts/naming-convention
       Adder: adderServiceImpl,
-    })
+    })()
 
     // Assert
     expect(result).toBe(3)

@@ -86,9 +86,9 @@ const mainFunction = DI.createFunction(function* () {
   return adder.add(1, 2)
 })
 
-const result = DI.run(mainFunction(), {
+const result = DI.provide(mainFunction, {
   Adder: adderServiceImpl,
-})
+})()
 
 // result === 3
 ```
@@ -221,18 +221,32 @@ const mainFunction = DI.createFunction(function* () {
 
 ## Running your program
 
-To run your program, you need to use the `run` function.
+To run your program, you need to use the `provide` function and call its
+return value.
 
 ```ts
 import * as DI from 'diabolo'
 
-DI.run(mainFunction(), {
+DI.provide(mainFunction, {
   MyService: myServiceImpl
-})
+})()
 ```
 
-The `run` function is type-safe. If you forget to provide a service, you
+The `provide` function is type-safe. If you forget to provide a service, you
 will get a TypeScript error.
+
+I decided to export a `provide` function instead of a `run`. This way, you
+can provide the services you want and call the function later.
+
+```ts
+import * as DI from 'diabolo'
+
+const providedMainFunction = DI.provide(mainFunction, {
+  MyService: myServiceImpl
+})
+
+providedMainFunction()
+```
 
 ## Alias
 
@@ -253,7 +267,7 @@ Here is the table of the aliases:
 | `lazyCreateServiceImpl` | `impl` |
 | `createFunction` | `fn` |
 | `requireService` | `req` |
-| `run` | `run` |
+| `provide` | `prov` |
 
 ## Examples
 
@@ -286,16 +300,16 @@ const mainFunction = DI.createFunction(function* () {
   return dog
 })
 
-DI.run(mainFunction(), {
+const dog = DI.provide(mainFunction, {
   ApiService: apiServiceImpl
-})
+})()
 
 if (import.meta.vitest) {
   const { expect, it } = import.meta.vitest
   it('should get a dog', async () => {
-    const dog = await DI.run(mainFunction(), {
+    const dog = await DI.provide(mainFunction, {
       ApiService: testApiServiceImpl
-    })
+    })()
     expect(dog).toBe('https://images.dog.ceo/breeds/terrier/norfolk/n02094114_1003.jpg')
   })
 }
