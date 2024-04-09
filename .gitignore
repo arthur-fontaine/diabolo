@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,windows,linux,node,git
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,windows,linux,node,git
+# Created by https://www.toptal.com/developers/gitignore/api/git,node,linux,macos,vercel,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=git,node,linux,macos,vercel,windows
 
 ### Git ###
 # Created by git for backups. To disable backups in Git:
@@ -204,6 +204,9 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+### Vercel ###
+.vercel
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -230,4 +233,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,windows,linux,node,git
+# End of https://www.toptal.com/developers/gitignore/api/git,node,linux,macos,vercel,windows

@@ -70,8 +70,8 @@ importers:
         specifier: ^1.2.1
         version: 1.2.11
       '@orama/plugin-astro':
-        specifier: ^1.2.1
-        version: 1.2.11(astro@2.10.15)
+        specifier: ^2.0.14
+        version: 2.0.14(astro@2.10.15)
       '@orama/plugin-match-highlight':
         specifier: ^1.2.1
         version: 1.2.11
@@ -1435,13 +1435,18 @@ packages:
     engines: {node: '>= 16.0.0'}
     dev: false
 
-  /@orama/plugin-astro@1.2.11(astro@2.10.15):
-    resolution: {integrity: sha512-13EoF7g1z1R6wFJM2TpwHl1LVFu4jlm/mmRqIZrvfwXvXRMuWpushsaDcJIictBoR2uimxXZ+mf+xRFpi/L/Iw==}
+  /@orama/orama@2.0.14:
+    resolution: {integrity: sha512-ibTX8/F5weax+BS1UzuHS8zmhB10i5TKZrEFrRiDDN8xeTww3rSIxb/nxW4YQFLRaTa7hIKlw7jb5ZBHtHBlCw==}
+    engines: {node: '>= 16.0.0'}
+    dev: false
+
+  /@orama/plugin-astro@2.0.14(astro@2.10.15):
+    resolution: {integrity: sha512-zipmu09eAbb/2ZBnTkBMkaU0KGBb/kKAylid+4zzNJzmDIj+Ev28T+Z5Eu8uuI6H0QHpuR2mD5PEjqg0bcqxMA==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       astro: ^2.0.4
     dependencies:
-      '@orama/orama': 1.2.11
+      '@orama/orama': 2.0.14
       astro: 2.10.15(@types/node@20.12.5)(sass@1.74.1)
       html-to-text: 9.0.5
     dev: false
