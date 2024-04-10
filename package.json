@@ -1,6 +1,6 @@
 {
   "name": "diabolo",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "packageManager": "pnpm@8.15.0",
   "repository": {
     "type": "git",
