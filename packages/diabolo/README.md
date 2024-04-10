@@ -153,9 +153,9 @@ school projects.
 
 ## Creating services
 
-A service is a type that represents a *something* that can be injected.
-That *something* can be a function, a class, an object… anything you
-want.
+A service is a type that represents an object that can be injected.
+This object is a record of anything you want. It can contain functions,
+variables, or anything else.
 
 To create a service in Diabolo, you need to use the `Service` type and
 the `createService` function.
@@ -192,6 +192,8 @@ const myServiceImpl = DI.lazyCreateServiceImpl<MyService>(() => ({
 
 ## Using services
 
+### Basic usage
+
 To use a service in Diabolo, you need to use the `createFunction` function.
 
 ```ts
@@ -217,6 +219,83 @@ const mainFunction = DI.createFunction(function* () {
   const myService = yield * DI.requireService(myService)
   myService.myFunction()
 })
+```
+
+### Composing functions
+
+You can run a function inside another function by using the `yield *`
+syntax.
+
+```ts
+import * as DI from 'diabolo'
+
+const function1 = DI.createFunction(function* () {
+  const myService = yield * DI.requireService(myService)
+  myService.myFunction()
+})
+
+const function2 = DI.createFunction(function* () {
+  yield * function1()
+})
+```
+
+### Stateful services
+
+When you use the `requireService` function, it will run the lazy implementation
+of the service if it has not been run yet. Otherwise, if you already required
+the service, it will return the same instance.
+
+In other words, by default, services have a state.
+
+It means that you can access and modify the same state in different functions.
+
+```ts
+import * as DI from 'diabolo'
+
+interface CounterService extends DI.Service<'Counter', {
+  increment: () => void
+  state: number
+}> { }
+
+const counterService = DI.createService<CounterService>('Counter')
+
+const counterServiceImpl = DI.lazyCreateServiceImpl<CounterService>(() => {
+  let state = 0
+  return {
+    increment: () => {
+      state++
+    },
+    get state() { return state },
+  }
+})
+
+const function1 = DI.createFunction(function* () {
+  const counter = yield * DI.requireService(counterService)
+  counter.increment()
+})
+
+const function2 = DI.createFunction(function* () {
+  const counter = yield * DI.requireService(counterService)
+  counter.increment()
+})
+
+const function3 = DI.createFunction(function* () {
+  const counter = yield * DI.requireService(counterService)
+  return counter.state
+})
+
+const mainFunction = DI.createFunction(function* () {
+  yield * function1()
+  yield * function2()
+  const state = yield * function3()
+  return state
+})
+
+const result = DI.provide(mainFunction, {
+  Counter: counterServiceImpl
+})()
+
+// result === 2
 ```
 
 ## Running your program
