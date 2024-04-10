@@ -5,6 +5,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
+    "publish": "jsr publish",
     "test": "vitest"
   }
 }

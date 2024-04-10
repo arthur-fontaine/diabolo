@@ -19,6 +19,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
+    "publish": "pnpm run -r publish",
     "test": "pnpm run -r test"
   },
   "devDependencies": {
@@ -30,6 +31,7 @@
     "eslint-plugin-fp": "^2.3.0",
     "eslint-plugin-perfectionist": "^2.8.0",
     "eslint-plugin-use-encapsulation": "^1.1.0",
+    "jsr": "^0.12.1",
     "typescript": "^5.4.4",
     "vitest": "^1.4.0"
   },
