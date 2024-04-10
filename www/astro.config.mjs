@@ -9,9 +9,8 @@ import Icons from 'unplugin-icons/vite';
 export default defineConfig({
   output: 'static',
   adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    },
+    webAnalytics: { enabled: true },
+    analytics: true
   }),
   vite: {
     plugins: [
