@@ -1,5 +1,6 @@
 import antfu from '@antfu/eslint-config'
 import perfectionistPlugin from "eslint-plugin-perfectionist"
+import jsdocPlugin from 'eslint-plugin-jsdoc'
 import filenamePlugin from 'eslint-plugin-filename-rules'
 import fpPlugin from 'eslint-plugin-fp'
 import useEncapsulationPlugin from 'eslint-plugin-use-encapsulation'
@@ -34,9 +35,11 @@ export default antfu(
       },
     },
     rules: {
+      curly: ['error', 'all'],
+      'complexity': ['error', 10],
+
       'eslint-comments/no-unlimited-disable': 'off',
-      ...perfectionistPlugin.configs['recommended-natural'].rules,
-      'perfectionist/sort-imports': 'off',
+
       'import/order': [
         'error',
         {
@@ -55,14 +58,9 @@ export default antfu(
           },
         },
       ],
-      curly: ['error', 'all'],
-      'complexity': ['error', 10],
-      'filename-rules/not-match': [2, /(^index\..*)/],
-      'fp/no-throw': 'error',
       'import/no-default-export': ['error'],
-      'ts/no-explicit-any': ['error'],
-      'unicorn/filename-case': ['error', { case: 'kebabCase', ignore: ['^.*\.md'] }],
-      'unicorn/switch-case-braces': ['error'],
+
+      ...jsdocPlugin.configs.recommended.rules,
       'jsdoc/match-description': ['error'],
       'jsdoc/require-description': ['error'],
       'jsdoc/require-description-complete-sentence': ['error'],
@@ -77,6 +75,19 @@ export default antfu(
           MethodDefinition: true,
         },
       }],
+      
+      'filename-rules/not-match': [2, /(^index\..*)/],
+      
+      'fp/no-throw': 'error',
+
+      ...perfectionistPlugin.configs['recommended-natural'].rules,
+      'perfectionist/sort-imports': 'off',
+      
+      'ts/no-explicit-any': ['error'],
+      
+      'unicorn/filename-case': ['error', { case: 'kebabCase', ignore: ['^.*\.md'] }],
+      'unicorn/switch-case-braces': ['error'],
+      
       'use-encapsulation/prefer-custom-hooks': ['error', {
         allow: [],
         block: [],

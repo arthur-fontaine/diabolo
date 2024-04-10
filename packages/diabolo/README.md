@@ -1,6 +1,6 @@
 <p align="center">
   <img
-    src="./.github/assets/logo.png"
+    src="https://raw.githubusercontent.com/arthur-fontaine/diabolo/main/.github/assets/logo.png"
     width="200px"
     align="center"
     alt="Diabolo logo" />

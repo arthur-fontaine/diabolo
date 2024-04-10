@@ -2,6 +2,9 @@ import type { Service as DiaboloService, ServiceImpl } from './types/service'
 
 /**
  * Run a function.
+ * @param {Generator} generator The function to run.
+ * @param {object} dependencies The dependencies to provide.
+ * @returns {Function} A function resulting from running the generator, with the dependencies provided.
  */
 export function provide<
   // eslint-disable-next-line ts/no-explicit-any

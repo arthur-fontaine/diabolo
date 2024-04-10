@@ -11,6 +11,8 @@ type CreateFunctionCallback<
 
 /**
  * Create a function that requires and uses services.
+ * @param {Function} function_ The function to create that can use services.
+ * @returns {Function} The function that requires and uses services.
  */
 export function createFunction<
   ReturnValue,
