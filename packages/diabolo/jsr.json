@@ -1,0 +1,13 @@
+{
+  "name": "@arthur-fontaine/diabolo",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./src/diabolo.ts",
+    "./aliased": "./src/diabolo-aliased.ts"
+  },
+  "publish": {
+    "exclude": [
+      "tests"
+    ]
+  }
+}

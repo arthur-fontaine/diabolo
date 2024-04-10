@@ -2,7 +2,7 @@
   "name": "diabolo",
   "version": "1.0.0",
   "description": "",
-  "license": "ISC",
+  "license": "MIT",
   "main": "index.js",
   "scripts": {
     "test": "vitest"
