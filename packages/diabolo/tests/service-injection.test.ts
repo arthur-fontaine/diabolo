@@ -1,9 +1,9 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, expectTypeOf, it } from 'vitest'
 
 import * as DI from '../src/diabolo'
 
 describe('service injection', () => {
-  it('should work', () => {
+  it('should work', async () => {
     // Arrange
     interface AdderService extends DI.Service<'Adder', {
       add: (a: number, b: number) => number
@@ -81,5 +81,64 @@ describe('service injection', () => {
 
     // Assert
     return expect(result).toBe(2)
+  })
+
+  it('should work with async functions', async () => {
+    // Arrange
+    interface AdderService extends DI.Service<'Adder', {
+      add: (a: number, b: number) => number
+    }> { }
+
+    const adderService = DI.createService<AdderService>('Adder')
+
+    const adderServiceImpl = DI.lazyCreateServiceImpl<AdderService>(
+      () => ({
+        add: (a: number, b: number) => a + b,
+      }),
+    )
+
+    const mainFunction = DI.createFunction(async function* () {
+      const adder = yield * DI.requireService(adderService)
+      return adder.add(1, 2)
+    })
+
+    // Act
+    const result = await DI.provide(mainFunction, {
+      // eslint-disable-next-line ts/naming-convention
+      Adder: adderServiceImpl,
+    })()
+
+    // Assert
+    expect(result).toBe(3)
+  })
+
+  it('should be a promise if we use async functions but we do not wait for them', async () => {
+    // Arrange
+    interface AdderService extends DI.Service<'Adder', {
+      add: (a: number, b: number) => number
+    }> { }
+
+    const adderService = DI.createService<AdderService>('Adder')
+
+    const adderServiceImpl = DI.lazyCreateServiceImpl<AdderService>(
+      () => ({
+        add: (a: number, b: number) => a + b,
+      }),
+    )
+
+    const mainFunction = DI.createFunction(async function* () {
+      const adder = yield * DI.requireService(adderService)
+      return adder.add(1, 2)
+    })
+
+    // Act
+    const result = DI.provide(mainFunction, {
+      // eslint-disable-next-line ts/naming-convention
+      Adder: adderServiceImpl,
+    })()
+
+    // Assert
+    expect(result).toBeInstanceOf(Promise)
+    expectTypeOf(result).toMatchTypeOf<Promise<number>>()
   })
 })

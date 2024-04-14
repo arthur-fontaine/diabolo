@@ -1,30 +1,26 @@
-import type { Function as DiaboloFunction } from './types/function'
+import type { GeneratorOrAsyncGenerator } from './types/generator-or-async-generator'
 import type { Service as DiaboloService } from './types/service'
-
-type CreateFunctionCallback<
-  ReturnValue,
-  Arguments extends unknown[],
-  Dependencies extends DiaboloService<string, Record<string, unknown>>,
-> = (
-  ...args: Arguments
-) => Generator<Dependencies, ReturnValue, unknown>
 
 /**
  * Create a function that requires and uses services.
- * @param {Function} function_ The function to create that can use services.
+ * @param {GeneratorOrAsyncGenerator} generator The function to create that can use services.
  * @returns {Function} The function that requires and uses services.
  */
 export function createFunction<
   ReturnValue,
   Arguments extends unknown[],
   Dependencies extends DiaboloService<string, Record<string, unknown>>,
+  GeneratorR extends GeneratorOrAsyncGenerator<
+    Dependencies,
+    ReturnValue
+  > = GeneratorOrAsyncGenerator<
+    Dependencies,
+    ReturnValue
+  >,
 >(
-  function_: CreateFunctionCallback<ReturnValue, Arguments, Dependencies>,
-): DiaboloFunction<ReturnValue, Arguments, Dependencies> {
-  return Object.assign(function_, {
-    _internalDoNotAssignItIsUsedForTypeInferenceArguments: undefined as never,
-    _internalDoNotAssignItIsUsedForTypeInferenceDependencies:
-      undefined as never,
-    _internalDoNotAssignItIsUsedForTypeInferenceReturnValue: undefined as never,
-  })
+  generator: (...args: Arguments) => GeneratorR,
+): (...args: Arguments) => GeneratorR extends AsyncGenerator
+    ? Extract<ReturnType<typeof generator>, AsyncGenerator>
+    : Extract<ReturnType<typeof generator>, Generator> {
+  return generator as never
 }

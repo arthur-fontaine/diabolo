@@ -1,6 +1,13 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
+import { describe, expectTypeOf, it } from 'vitest'
 
 import * as DI from '../src/diabolo'
+import type { GeneratorOrAsyncGenerator } from '../src/diabolo/types/generator-or-async-generator'
+
+// eslint-disable-next-line ts/no-explicit-any
+type GetDependencies<T extends (...args: any[]) => GeneratorOrAsyncGenerator> =
+  T extends (...args: infer A) => GeneratorOrAsyncGenerator<infer D>
+    ? D
+    : never
 
 describe('type WithServices', () => {
   it('should work when a service is required and used', () => {
@@ -11,7 +18,7 @@ describe('type WithServices', () => {
 
     interface MultiplierService extends DI.Service<'Multiplier', {
       multiply:
-      DI.WithServices<(a: number, b: number) => number, AdderService>
+      DI.WithServices<'sync', (a: number, b: number) => number, AdderService>
     }> { }
 
     const multiply = DI.createFunction(function* (a: number, b: number) {
@@ -37,7 +44,7 @@ describe('type WithServices', () => {
 
     interface MultiplierService extends DI.Service<'Multiplier', {
       multiply:
-      DI.WithServices<(a: number, b: number) => number, AdderService>
+      DI.WithServices<'sync', (a: number, b: number) => number, AdderService>
     }> { }
 
     const multiply = DI.createFunction(function* (a: number, b: number) {
@@ -58,7 +65,7 @@ describe('type WithServices', () => {
 
     interface MultiplierService extends DI.Service<'Multiplier', {
       multiply:
-      DI.WithServices<(a: number, b: number) => number, AdderService>
+      DI.WithServices<'sync', (a: number, b: number) => number, AdderService>
     }> { }
     const multiplierService = DI.createService<MultiplierService>('Multiplier')
 
@@ -67,9 +74,9 @@ describe('type WithServices', () => {
       return yield * multiplier.multiply(2, 3)
     })
 
-    expectTypeOf(
-      mainFunction._internalDoNotAssignItIsUsedForTypeInferenceDependencies,
-    ).exclude<MultiplierService>().toEqualTypeOf<AdderService>()
+    expectTypeOf({} as GetDependencies<typeof mainFunction>)
+      .exclude<MultiplierService>()
+      .toEqualTypeOf<AdderService>()
   })
 
   it('should pass down multiple services', () => {
@@ -83,10 +90,7 @@ describe('type WithServices', () => {
 
     interface MultiplierService extends DI.Service<'Multiplier', {
       multiply:
-      DI.WithServices<
-        (a: number, b: number) => number,
-        AdderService | LoggerService
-      >
+      DI.WithServices<'sync', (a: number, b: number) => number, AdderService | LoggerService>
     }> { }
     const multiplierService = DI.createService<MultiplierService>('Multiplier')
 
@@ -95,9 +99,9 @@ describe('type WithServices', () => {
       return yield * multiplier.multiply(2, 3)
     })
 
-    expectTypeOf(
-      mainFunction._internalDoNotAssignItIsUsedForTypeInferenceDependencies,
-    ).exclude<MultiplierService>().toEqualTypeOf<AdderService | LoggerService>()
+    expectTypeOf({} as GetDependencies<typeof mainFunction>)
+      .exclude<MultiplierService>()
+      .toEqualTypeOf<AdderService | LoggerService>()
   })
 
   it('should not work when a service is used but not required', () => {
@@ -108,7 +112,7 @@ describe('type WithServices', () => {
 
     interface MultiplierService extends DI.Service<'Multiplier', {
       multiply:
-      DI.WithServices<(a: number, b: number) => number, never>
+      DI.WithServices<'sync', (a: number, b: number) => number, never>
     }> { }
 
     const multiply = DI.createFunction(function* (a: number, b: number) {
@@ -120,9 +124,13 @@ describe('type WithServices', () => {
       return result
     })
 
-    expectTypeOf(multiply).not.toMatchTypeOf<
+    expectTypeOf(multiply)
+      .not
+      .toMatchTypeOf<
       ReturnType<
-        Parameters<typeof DI.lazyCreateServiceImpl<MultiplierService>>[0]
+        Parameters<
+            typeof DI.lazyCreateServiceImpl<MultiplierService>
+        >[0]
       >['multiply']
     >()
   })
