@@ -6,6 +6,7 @@
  * | Original | Alias |
  * | --- | --- |
  * | `Service` | `Srv` |
+ * | `WithServices` | `With` |
  * | `createService` | `srv` |
  * | `lazyCreateServiceImpl` | `impl` |
  * | `createFunction` | `fn` |
@@ -19,3 +20,4 @@ export { lazyCreateServiceImpl as impl } from './diabolo/lazy-create-service-imp
 export { provide as prov } from './diabolo/provide'
 export { requireService as req } from './diabolo/require-service'
 export type { Service as Srv } from './diabolo/types/service'
+export type { WithServices as With } from './diabolo/types/with-services'

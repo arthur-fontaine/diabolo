@@ -173,6 +173,34 @@ interface MyService extends DI.Service<
 const myService = DI.createService<MyService>('MyService')
 ```
 
+If one of your functions needs one or more other services, you can use
+the `WithServices` type.
+
+```ts
+import * as DI from 'diabolo'
+
+interface MyService extends DI.Service<
+  'MyService',
+  {
+    myFunction: (OtherService) => void
+  }
+> { }
+
+interface OtherService extends DI.Service<
+  'OtherService',
+  {
+    otherFunction: () => void
+  }
+> { }
+
+interface YetAnotherService extends DI.Service<
+  'YetAnotherService',
+  {
+    yetAnotherFunction: DI.WithServices<() => void, MyService | OtherService>
+  }
+> { }
+```
+
 ## Implementing services
 
 Implementing a service is creating a function that returns the service.
@@ -188,6 +216,23 @@ const myServiceImpl = DI.lazyCreateServiceImpl<MyService>(() => ({
     console.log('Hello, world!')
   }
 }))
+```
+
+If you need to use another service in your implementation, you can use the
+[`createFunction`](#using-services) function.
+
+```ts
+import * as DI from 'diabolo'
+
+const otherServiceImpl = DI.lazyCreateServiceImpl<OtherService>(() => {
+  const myService = yield * DI.requireService(myService)
+  return {
+    otherFunction: DI.createFunction(function* () {
+      const myService = yield * DI.requireService(myService)
+      yield * myService.myFunction()
+    })
+  }
+})
 ```
 
 ## Using services
@@ -342,6 +387,7 @@ Here is the table of the aliases:
 | Original | Alias |
 | --- | --- |
 | `Service` | `Srv` |
+| `WithServices` | `With` |
 | `createService` | `srv` |
 | `lazyCreateServiceImpl` | `impl` |
 | `createFunction` | `fn` |

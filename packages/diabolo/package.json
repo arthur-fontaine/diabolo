@@ -1,12 +1,12 @@
 {
   "name": "diabolo",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Dependency injection library for JavaScript the way it should be. Simple, cross-platform, no external dependencies, and works perfectly with TypeScript.",
   "license": "MIT",
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
     "publish": "jsr publish",
-    "test": "vitest"
+    "test": "vitest --typecheck"
   }
 }
