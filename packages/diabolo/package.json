@@ -1,6 +1,6 @@
 {
   "name": "diabolo",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "Dependency injection library for JavaScript the way it should be. Simple, cross-platform, no external dependencies, and works perfectly with TypeScript.",
   "license": "MIT",
   "main": "index.js",

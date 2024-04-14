@@ -20,12 +20,16 @@ export function provide<
   >,
 >(
   generator: (...args: Arguments) => GeneratorR,
-  dependencies: {
+  dependencies: GeneratorR extends GeneratorOrAsyncGenerator<
+    infer Dependencies,
+    // eslint-disable-next-line ts/no-explicit-any
+    any
+  > ? Dependencies extends DiaboloService<string, Record<string, unknown>> ? {
     [ServiceName in Dependencies['name']]: () => ServiceImpl<Extract<
       Dependencies,
       { name: ServiceName }
     >>
-  },
+  } : never : never,
 ): (...args: Arguments) => GeneratorR extends GeneratorOrAsyncGenerator<
     infer _,
     infer R
@@ -72,7 +76,7 @@ export function provide<
     dependencyRequested: Dependencies,
   ) {
     const serviceName: keyof typeof dependencies = dependencyRequested.name
-    const dependency = dependencies[serviceName]()
+    const dependency = dependencies[serviceName]!()
 
     return dependency
   }
