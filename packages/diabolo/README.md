@@ -196,7 +196,11 @@ interface OtherService extends DI.Service<
 interface YetAnotherService extends DI.Service<
   'YetAnotherService',
   {
-    yetAnotherFunction: DI.WithServices<() => void, MyService | OtherService>
+    yetAnotherFunction: DI.WithServices<
+      'sync', // If the function is 'sync' or 'async'
+      () => void, // The type of the function
+      MyService | OtherService // The services needed by the function
+    >
   }
 > { }
 ```
@@ -384,15 +388,15 @@ import * as DI from 'diabolo/aliased'
 
 Here is the table of the aliases:
 
-| Original | Alias |
-| --- | --- |
-| `Service` | `Srv` |
-| `WithServices` | `With` |
-| `createService` | `srv` |
+| Original                | Alias  |
+| ----------------------- | ------ |
+| `Service`               | `Srv`  |
+| `WithServices`          | `With` |
+| `createService`         | `srv`  |
 | `lazyCreateServiceImpl` | `impl` |
-| `createFunction` | `fn` |
-| `requireService` | `req` |
-| `provide` | `prov` |
+| `createFunction`        | `fn`   |
+| `requireService`        | `req`  |
+| `provide`               | `prov` |
 
 ## Examples
 
