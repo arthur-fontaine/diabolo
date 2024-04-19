@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf, it } from 'vitest'
 
 import * as DI from '../src/diabolo'
+import type { UnionToIntersection } from '../src/diabolo/types/union-to-intersection'
 
 describe('service injection', () => {
   it('should work', async () => {
@@ -140,5 +141,33 @@ describe('service injection', () => {
     // Assert
     expect(result).toBeInstanceOf(Promise)
     expectTypeOf(result).toMatchTypeOf<Promise<number>>()
+  })
+
+  it('should contain all services in the dependencies object', () => {
+    interface AdderService extends DI.Service<'Adder', {
+      add: (a: number, b: number) => number
+    }> { }
+
+    interface MultiplierService extends DI.Service<'Multiplier', {
+      multiply: (a: number, b: number) => number
+    }> { }
+
+    type Dependencies = Parameters<typeof DI.provide<
+      unknown,
+      [],
+      DI.Service<string, Record<string, unknown>>,
+      Generator<AdderService | MultiplierService, number, unknown>
+    >>[1]
+
+    expectTypeOf<Dependencies>().toEqualTypeOf<{
+      // eslint-disable-next-line ts/naming-convention
+      Adder: () => {
+        add: (a: number, b: number) => number
+      }
+      // eslint-disable-next-line ts/naming-convention
+      Multiplier: () => {
+        multiply: (a: number, b: number) => number
+      }
+    }>({} as never)
   })
 })

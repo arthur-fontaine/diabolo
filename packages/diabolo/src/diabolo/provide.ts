@@ -1,5 +1,6 @@
 import type { GeneratorOrAsyncGenerator } from './types/generator-or-async-generator'
 import type { Service as DiaboloService, ServiceImpl } from './types/service'
+import type { UnionToIntersection } from './types/union-to-intersection'
 
 /**
  * Run a function.
@@ -20,16 +21,18 @@ export function provide<
   >,
 >(
   generator: (...args: Arguments) => GeneratorR,
-  dependencies: GeneratorR extends GeneratorOrAsyncGenerator<
-    infer Dependencies,
-    // eslint-disable-next-line ts/no-explicit-any
-    any
-  > ? Dependencies extends DiaboloService<string, Record<string, unknown>> ? {
-    [ServiceName in Dependencies['name']]: () => ServiceImpl<Extract<
-      Dependencies,
-      { name: ServiceName }
-    >>
-  } : never : never,
+  dependencies: UnionToIntersection<
+    GeneratorR extends GeneratorOrAsyncGenerator<
+      infer Dependencies,
+      // eslint-disable-next-line ts/no-explicit-any
+      any
+    > ? Dependencies extends DiaboloService<string, Record<string, unknown>> ? {
+      [ServiceName in Dependencies['name']]: () => ServiceImpl<Extract<
+        Dependencies,
+        { name: ServiceName }
+      >>
+    } : never : never
+  >,
 ): (...args: Arguments) => GeneratorR extends GeneratorOrAsyncGenerator<
     infer _,
     infer R
@@ -75,8 +78,25 @@ export function provide<
   function feedDependency(
     dependencyRequested: Dependencies,
   ) {
-    const serviceName: keyof typeof dependencies = dependencyRequested.name
-    const dependency = dependencies[serviceName]!()
+    const serviceName = dependencyRequested.name as keyof typeof dependencies
+
+    if (
+      typeof dependencies !== 'object'
+      || dependencies === null
+      || !(serviceName in dependencies)
+    ) {
+      // Service not provided
+      return
+    }
+
+    const lazyDependency = dependencies[serviceName]
+
+    if (typeof lazyDependency !== 'function') {
+      // Service provided is not a function
+      return
+    }
+
+    const dependency = lazyDependency()
 
     return dependency
   }
