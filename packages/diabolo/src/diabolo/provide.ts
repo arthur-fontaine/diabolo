@@ -2,6 +2,21 @@ import type { GeneratorOrAsyncGenerator } from './types/generator-or-async-gener
 import type { Service as DiaboloService, ServiceImpl } from './types/service'
 import type { UnionToIntersection } from './types/union-to-intersection'
 
+type DependenciesObject<
+  GeneratorR extends GeneratorOrAsyncGenerator,
+> = UnionToIntersection<
+  GeneratorR extends GeneratorOrAsyncGenerator<
+    infer Dependencies,
+    // eslint-disable-next-line ts/no-explicit-any
+    any
+  > ? Dependencies extends DiaboloService<string, Record<string, unknown>> ? {
+    [ServiceName in Dependencies['name']]: () => ServiceImpl<Extract<
+      Dependencies,
+      { name: ServiceName }
+    >>
+  } : never : never
+>
+
 /**
  * Run a function.
  * @param {Generator} generator The function to run.
@@ -21,26 +36,21 @@ export function provide<
   >,
 >(
   generator: (...args: Arguments) => GeneratorR,
-  dependencies: UnionToIntersection<
-    GeneratorR extends GeneratorOrAsyncGenerator<
-      infer Dependencies,
-      // eslint-disable-next-line ts/no-explicit-any
-      any
-    > ? Dependencies extends DiaboloService<string, Record<string, unknown>> ? {
-      [ServiceName in Dependencies['name']]: () => ServiceImpl<Extract<
-        Dependencies,
-        { name: ServiceName }
-      >>
-    } : never : never
-  >,
-): (...args: Arguments) => GeneratorR extends GeneratorOrAsyncGenerator<
+  dependencies:
+    | DependenciesObject<GeneratorR>
+    | Promise<DependenciesObject<GeneratorR>>,
+): (...args: Arguments) => (
+  GeneratorR extends GeneratorOrAsyncGenerator<
     infer _,
     infer R
   > ?
     GeneratorR extends AsyncGenerator
       ? Promise<R>
-      : R
-    : never {
+      : Dependencies extends Promise<unknown>
+        ? Promise<R>
+        : R
+    : never
+  ) {
   return (...args: Arguments) => {
     const generatorInstance = generator(...args)
 
@@ -78,6 +88,17 @@ export function provide<
   function feedDependency(
     dependencyRequested: Dependencies,
   ) {
+    if (dependencies instanceof Promise) {
+      return feedDependencyAsync(dependencyRequested)
+    }
+
+    return feedDependencySync(dependencyRequested, dependencies)
+  }
+
+  function feedDependencySync(
+    dependencyRequested: Dependencies,
+    dependencies: DependenciesObject<GeneratorR>,
+  ) {
     const serviceName = dependencyRequested.name as keyof typeof dependencies
 
     if (
@@ -100,13 +121,13 @@ export function provide<
 
     return dependency
   }
-}
 
-// function isAsyncGenerator(
-//   generator: GeneratorOrAsyncGenerator,
-// ): generator is AsyncGenerator {
-//   return generator.constructor.name === 'AsyncGenerator'
-// }
+  async function feedDependencyAsync(
+    dependencyRequested: Dependencies,
+  ) {
+    return feedDependencySync(dependencyRequested, await dependencies)
+  }
+}
 
 // eslint-disable-next-line ts/no-explicit-any
 function isAsyncGenerator(value: any): value is AsyncGenerator {

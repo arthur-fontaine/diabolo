@@ -75,13 +75,15 @@ describe('service injection', () => {
     })
 
     // Act
-    const result = DI.provide(mainFunction, {
+    const mainFunctionProvided = DI.provide(mainFunction, {
       // eslint-disable-next-line ts/naming-convention
       Counter: counterServiceImpl,
-    })()
+    })
+    const result = mainFunctionProvided()
 
     // Assert
-    return expect(result).toBe(2)
+    expect(result).toBe(2)
+    expectTypeOf(mainFunctionProvided).toMatchTypeOf<() => number>()
   })
 
   it('should work with async functions', async () => {
@@ -104,13 +106,46 @@ describe('service injection', () => {
     })
 
     // Act
-    const result = await DI.provide(mainFunction, {
+    const mainFunctionProvided = DI.provide(mainFunction, {
       // eslint-disable-next-line ts/naming-convention
       Adder: adderServiceImpl,
-    })()
+    })
+    const result = await mainFunctionProvided()
 
     // Assert
     expect(result).toBe(3)
+    expectTypeOf(mainFunctionProvided).toMatchTypeOf<() => Promise<number>>()
+  })
+
+  it('should work with async providers', async () => {
+    // Arrange
+    interface AdderService extends DI.Service<'Adder', {
+      add: (a: number, b: number) => number
+    }> { }
+
+    const adderService = DI.createService<AdderService>('Adder')
+
+    const adderServiceImpl = DI.lazyCreateServiceImpl<AdderService>(
+      () => ({
+        add: (a: number, b: number) => a + b,
+      }),
+    )
+
+    const mainFunction = DI.createFunction(async function* () {
+      const adder = yield * DI.requireService(adderService)
+      return adder.add(1, 2)
+    })
+
+    // Act
+    const mainFunctionProvided = DI.provide(mainFunction, Promise.resolve({
+      // eslint-disable-next-line ts/naming-convention
+      Adder: adderServiceImpl,
+    }))
+    const result = await mainFunctionProvided()
+
+    // Assert
+    expect(result).toBe(3)
+    expectTypeOf(mainFunctionProvided).toMatchTypeOf<() => Promise<number>>()
   })
 
   it('should be a promise if we use async functions but we do not wait for them', async () => {
@@ -152,12 +187,12 @@ describe('service injection', () => {
       multiply: (a: number, b: number) => number
     }> { }
 
-    type Dependencies = Parameters<typeof DI.provide<
+    type Dependencies = Exclude<Parameters<typeof DI.provide<
       unknown,
       [],
       DI.Service<string, Record<string, unknown>>,
       Generator<AdderService | MultiplierService, number, unknown>
-    >>[1]
+    >>[1], Promise<unknown>>
 
     expectTypeOf<Dependencies>().toEqualTypeOf<{
       // eslint-disable-next-line ts/naming-convention

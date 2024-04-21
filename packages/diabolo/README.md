@@ -270,6 +270,17 @@ const mainFunction = DI.createFunction(function* () {
 })
 ```
 
+Your function can also be asynchronous.
+
+```ts
+import * as DI from 'diabolo'
+
+const mainFunction = DI.createFunction(async function* () {
+  const myService = yield * DI.requireService(myService)
+  await myService.myFunction()
+})
+```
+
 ### Composing functions
 
 You can run a function inside another function by using the `yield *`
@@ -358,6 +369,25 @@ import * as DI from 'diabolo'
 DI.provide(mainFunction, {
   MyService: myServiceImpl
 })()
+```
+
+Your provided dependencies can also be a promise. It may be useful if you
+dynamically import one of your services.
+
+```ts
+import * as DI from 'diabolo'
+
+async function getImpls() {
+  if (runtime.isNode) {
+    const { default: myServiceImpl } = await import('./myService.node.js')
+    return { MyService: myServiceImpl }
+  } else {
+    const { default: myServiceImpl } = await import('./myService.browser.js')
+    return { MyService: myServiceImpl }
+  }
+}
+
+DI.provide(mainFunction, getImpls())()
 ```
 
 The `provide` function is type-safe. If you forget to provide a service, you

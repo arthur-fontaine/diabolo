@@ -1,6 +1,6 @@
 {
   "name": "@arthur-fontaine/diabolo",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "exports": {
     ".": "./src/diabolo.ts",
     "./aliased": "./src/diabolo-aliased.ts"
