@@ -228,15 +228,12 @@ If you need to use another service in your implementation, you can use the
 ```ts
 import * as DI from 'diabolo'
 
-const otherServiceImpl = DI.lazyCreateServiceImpl<OtherService>(() => {
-  const myService = yield * DI.requireService(myService)
-  return {
-    otherFunction: DI.createFunction(function* () {
-      const myService = yield * DI.requireService(myService)
-      yield * myService.myFunction()
-    })
-  }
-})
+const otherServiceImpl = DI.lazyCreateServiceImpl<OtherService>(() => ({
+  otherFunction: DI.createFunction(function* () {
+    const myService = yield * DI.requireService(myService)
+    yield * myService.myFunction()
+  })
+}))
 ```
 
 ## Using services
